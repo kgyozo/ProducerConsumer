@@ -7,6 +7,13 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.epam.gyozo_karer.data.WatchableFile;
+import com.epam.gyozo_karer.observer.FileObservable;
+import com.epam.gyozo_karer.observer.Observable;
+import com.epam.gyozo_karer.observer.Observer;
+import com.epam.gyozo_karer.observer.WriteOutObserver;
+import com.epam.gyozo_karer.watcher.FileWatcher;
+
 public class App 
 {
     public static void main( String[] args )

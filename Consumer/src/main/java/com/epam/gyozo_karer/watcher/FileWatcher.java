@@ -1,4 +1,4 @@
-package com.epam.gyozo_karer;
+package com.epam.gyozo_karer.watcher;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
@@ -19,6 +19,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import com.epam.gyozo_karer.data.FileEvent;
+import com.epam.gyozo_karer.data.WatchableFile;
+import com.epam.gyozo_karer.observer.FileObservable;
+import com.epam.gyozo_karer.observer.Observable;
 
 public class FileWatcher {
 

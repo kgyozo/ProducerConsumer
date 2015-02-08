@@ -1,4 +1,4 @@
-package com.epam.gyozo_karer;
+package com.epam.gyozo_karer.data;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package com.epam.gyozo_karer;
+package com.epam.gyozo_karer.data;
 
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
@@ -6,10 +6,9 @@ import java.nio.file.WatchEvent.Kind;
 
 public class FileEvent {
 	
-	public String path;
-	public String fileName;
-	
-	public Kind<?> fileEvent;
+	private String path;
+	private String fileName;
+	private Kind<?> fileEvent;
 	
 	public String getPath() {
 		return path;

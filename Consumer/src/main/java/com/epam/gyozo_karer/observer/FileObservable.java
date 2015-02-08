@@ -1,12 +1,14 @@
-package com.epam.gyozo_karer;
+package com.epam.gyozo_karer.observer;
 
 import java.nio.file.WatchEvent.Kind;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.epam.gyozo_karer.data.FileEvent;
+
 public class FileObservable implements Observable {
 	
-	public List<Observer> observers = null;
+	private List<Observer> observers = null;
 
 	public void attach(Observer fileHandler, Kind<?> kind) {
 		if (observers == null) {

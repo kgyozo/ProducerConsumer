@@ -1,10 +1,11 @@
-package com.epam.gyozo_karer;
+package com.epam.gyozo_karer.observer;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import com.epam.gyozo_karer.data.FileEvent;
+
 public class WriteOutObserver implements Observer {
 
 	private StringBuilder lastLine = null;
@@ -32,19 +35,9 @@ public class WriteOutObserver implements Observer {
 				event.getFileName());
 		if (ENTRY_MODIFY == event.getFileEvent()) {
 			try {
-				Path path = Paths.get(event.getPath(), event.getFileName());
 
-				File file = new File(event.getPath(), event.getFileName());
-				FileInputStream fis = new FileInputStream(file);
-				FileChannel channel = fis.getChannel();
-				FileLock lock = channel.lock(0L, Long.MAX_VALUE, true);
-
-				List<String> lines = Files.readAllLines(path);
-
-				lock.release();
-				channel.close();
-				fis.close();
-
+				List<String> lines = readLines(event);
+				
 				String linePattern = "^Line number [0-9]+$";
 				boolean writeOut = false;
 				File fileOut = new File("e:/Gyozo/sts-bundle", "almaCopy.txt");
@@ -90,8 +83,6 @@ public class WriteOutObserver implements Observer {
 					}
 				}
 
-				// File fileOut = new File("e:/Gyozo/sts-bundle",
-				// "almaCopy.txt");
 				if (writeOut) {
 					if (!fileOut.exists()) {
 						fileOut.createNewFile();
@@ -99,7 +90,6 @@ public class WriteOutObserver implements Observer {
 					BufferedWriter bw = null;
 					try {
 						FileWriter fw = new FileWriter(fileOut, true);
-						// BufferedWriter writer give better performance
 						bw = new BufferedWriter(fw);
 
 						for (String line : lines) {
@@ -111,32 +101,44 @@ public class WriteOutObserver implements Observer {
 					}
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
 	}
 
-	public FileOutputStream openOutputStream(File file) throws IOException {
-		if (file.exists()) {
-			if (file.isDirectory()) {
-				throw new IOException("File '" + file
-						+ "' exists but is a directory");
+	private List<String> readLines(FileEvent event) {
+		Path path = Paths.get(event.getPath(), event.getFileName());
+
+		File file = new File(event.getPath(), event.getFileName());
+		FileInputStream fis = null;
+		FileChannel channel = null;
+		FileLock lock = null;
+		List<String> lines = null;
+		try {
+			fis = new FileInputStream(file);
+			channel = fis.getChannel();
+			lock = channel.lock(0L, Long.MAX_VALUE, true);
+
+			lines = Files.readAllLines(path);
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+
+			try {
+				lock.release();
+				channel.close();
+				fis.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			if (file.canWrite() == false) {
-				throw new IOException("File '" + file
-						+ "' cannot be written to");
-			}
-		} else {
-			File parent = file.getParentFile();
-			if (parent != null && parent.exists() == false) {
-				if (parent.mkdirs() == false) {
-					throw new IOException("File '" + file
-							+ "' could not be created");
-				}
-			}
+			
 		}
-		return new FileOutputStream(file);
+		return lines;
 	}
 }
