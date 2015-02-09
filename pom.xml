@@ -25,8 +25,8 @@
 						<showDeprecation>true</showDeprecation>
 						<showWarnings>true</showWarnings>
 						<compilerArguments>
-							<source>1.8</source>
-							<target>1.8</target>
+							<source>${java.version}</source>
+							<target>${java.version}</target>
 						</compilerArguments>
 					</configuration>
 				</plugin>
@@ -38,8 +38,42 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<!-- Spring 3 dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+	<groupId>org.mockito</groupId>
+	<artifactId>mockito-all</artifactId>
+	<version>${mockito.version}</version>
+</dependency>
 	</dependencies>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<junit.version>4.11</junit.version>
+		<log4j.version>1.2.17</log4j.version>
+		<mockito.version>1.9.5</mockito.version>
+		<spring.version>3.0.5.RELEASE</spring.version>
+	</properties>
+
 </project>

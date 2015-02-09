@@ -8,6 +8,15 @@ This needs to be properly tested. We want the tests implemented in JUnit. We are
 
 Please, provide a Java project with Maven with the solution to the problem
 
-compile : mvn clean package
-execute : java -jar <name>.jar
+UserGuide
+=========
+
+There are 2 projects (Consumer, Producer).
+
+The Producer application generate 50 messages with 1 minute per 1 message speed. After 50 messages the application stops.
+The Consumer application waits for the file changes. you need to force stop the application.
+
+You need to compile the applications one by one.
+compile : mvn clean assembly:assembly
+execute : java -jar <name>-jar-with-dependencies.jar
 PITest: mvn org.pitest:pitest-maven:mutationCoverage

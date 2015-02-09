@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="outputFilePath" class="java.lang.String">
+		<constructor-arg value="d:/Trainings/InterviewPreparationWorkspace/test" />
+	</bean>
+	<bean id="outputFileName" class="java.lang.String">
+		<constructor-arg value="alma.txt" />
+	</bean>
+
+	<bean id="writer" class="com.epam.gyozo_karer.Writer"/>
+	<bean id="creator" class="com.epam.gyozo_karer.LineCreator"/>
+	
+	<bean id="producer" class="com.epam.gyozo_karer.Producer">
+		<property name="filePath" ref="outputFilePath"/>
+		<property name="fileName" ref="outputFileName"/>
+		<property name="writer" ref="writer"/>
+		<property name="lineCreator" ref="creator"/>
+	</bean>
+	
+</beans>

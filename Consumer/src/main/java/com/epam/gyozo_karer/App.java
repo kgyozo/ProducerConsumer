@@ -7,7 +7,13 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import com.epam.gyozo_karer.data.WatchableFile;
+import com.epam.gyozo_karer.file.FileHandler;
+import com.epam.gyozo_karer.file.ModifiedFileHandler;
+import com.epam.gyozo_karer.file.Writer;
 import com.epam.gyozo_karer.observer.FileObservable;
 import com.epam.gyozo_karer.observer.Observable;
 import com.epam.gyozo_karer.observer.Observer;
@@ -18,18 +24,18 @@ public class App
 {
     public static void main( String[] args )
     {
-//        FileWatcher watcher = new FileWatcher("d://Trainings//InterviewPreparationWorkspace//test", "alma.txt");
-    	WatchableFile file = new WatchableFile();
-    	file.setPath("e:/Gyozo/sts-bundle");
-    	file.setFileName("alma.txt");
-    	List<WatchableFile> files = new LinkedList<>();
-    	files.add(file);
-        FileWatcher watcher = new FileWatcher(files);
+    	ApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeans.xml");
+        FileWatcher watcher = (FileWatcher) ctx.getBean("fileWatcher");
+
+        Observer observer = (WriteOutObserver) ctx.getBean("writeOutObserver");
         
-        Observer observer = new WriteOutObserver();
+        FileHandler modifiedFileHandler = (ModifiedFileHandler) ctx.getBean("modifiedFileHandler");
+
+        observer.setModifyFileHandler(modifiedFileHandler);
         Observable observable = new FileObservable();
         observable.attach(observer, ENTRY_MODIFY);
-        watcher.setObserv(observable);
+        watcher.setObservable(observable);
+        
         watcher.watch();
     }
 }

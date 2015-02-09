@@ -15,7 +15,6 @@ public class FileObservable implements Observable {
 			observers = new LinkedList<>();
 		}
 		observers.add(fileHandler);
-		
 	}
 
 	public void detach(Observer fileHandler, Kind<?> kind) {

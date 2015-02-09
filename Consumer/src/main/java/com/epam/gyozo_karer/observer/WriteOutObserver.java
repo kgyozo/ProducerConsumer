@@ -22,123 +22,49 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.epam.gyozo_karer.data.FileEvent;
+import com.epam.gyozo_karer.file.FileHandler;
+import com.epam.gyozo_karer.file.Writer;
+import com.epam.gyozo_karer.watcher.FileWatcher;
 
 public class WriteOutObserver implements Observer {
+	
+	final static Logger logger = Logger.getLogger(WriteOutObserver.class);
 
-	private StringBuilder lastLine = null;
+	private FileHandler modifyFileHandler;
+	private Writer writer;
 
 	public void update(FileEvent event) {
-		String filePath = "e:/Gyozo/sts-bundle/";
-		String fileName = "almas.out";
-		System.out.printf("Modosult a file (%s), kiolvassuk es kiirjuk\n",
-				event.getFileName());
+
 		if (ENTRY_MODIFY == event.getFileEvent()) {
-			try {
-
-				List<String> lines = readLines(event);
+			List<String> lines = modifyFileHandler.action(event);
+			if (!lines.isEmpty()) {
+				//DI
+				writer = new Writer();
+			    writer.setFile("d:/Trainings/InterviewPreparationWorkspace/test", "alma.out");
 				
-				String linePattern = "^Line number [0-9]+$";
-				boolean writeOut = false;
-				File fileOut = new File("e:/Gyozo/sts-bundle", "almaCopy.txt");
-				for (int i = 0; i < lines.size(); i++) {
-					String line = lines.get(i);
-					if (line.matches(linePattern)) {
-						if (lastLine == null && !fileOut.exists()) {
-							lastLine = new StringBuilder();
-							writeOut = true;
-						} else if (lastLine == null && !writeOut
-								&& fileOut.exists()) {
-							Path pathOut = Paths.get("e:/Gyozo/sts-bundle",
-									"almaCopy.txt");
-							List<String> linesFromOut = Files
-									.readAllLines(pathOut);
-							if (linesFromOut.size() == 0) {
-								lastLine = new StringBuilder();
-								writeOut = true;
-							} else {
-								lastLine = new StringBuilder(
-										linesFromOut.get(linesFromOut.size() - 1));
-								// writeOut = true;
-							}
-						}
-						if (writeOut) {
-							this.lastLine.setLength(0);
-							this.lastLine.append(line);
-							System.out.println(line);
-						} else {
-							lines.remove(i);
-							System.out.println("torolve> " + line);
-							i--;
-						}
-
-						if (lastLine != null && !writeOut
-								&& lastLine.toString().equals(line)) {
-							writeOut = true;
-						}
-					} else {
-						lines.remove(i);
-						System.out.println("torolve> " + line);
-						i--;
-					}
-				}
-
-				if (writeOut) {
-					if (!fileOut.exists()) {
-						fileOut.createNewFile();
-					}
-					BufferedWriter bw = null;
-					try {
-						FileWriter fw = new FileWriter(fileOut, true);
-						bw = new BufferedWriter(fw);
-
-						for (String line : lines) {
-							bw.write(line.toString());
-							bw.write("\n");
-						}
-					} finally {
-						bw.close();
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			    writer.writeOut(lines);
 			}
 		}
 	}
 
-	private List<String> readLines(FileEvent event) {
-		Path path = Paths.get(event.getPath(), event.getFileName());
-
-		File file = new File(event.getPath(), event.getFileName());
-		FileInputStream fis = null;
-		FileChannel channel = null;
-		FileLock lock = null;
-		List<String> lines = null;
-		try {
-			fis = new FileInputStream(file);
-			channel = fis.getChannel();
-			lock = channel.lock(0L, Long.MAX_VALUE, true);
-
-			lines = Files.readAllLines(path);
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-
-			try {
-				lock.release();
-				channel.close();
-				fis.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		return lines;
+	public FileHandler getModifyFileHandler() {
+		return modifyFileHandler;
 	}
+
+	public void setModifyFileHandler(FileHandler modifyFileHandler) {
+		this.modifyFileHandler = modifyFileHandler;
+	}
+
+	public Writer getWriter() {
+		return writer;
+	}
+
+	public void setWriter(Writer writer) {
+		this.writer = writer;
+	}
+	
+	
 }
