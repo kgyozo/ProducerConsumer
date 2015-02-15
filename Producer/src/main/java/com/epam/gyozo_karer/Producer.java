@@ -1,5 +1,11 @@
 package com.epam.gyozo_karer;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+
 import org.apache.log4j.Logger;
 
 public class Producer {
@@ -16,7 +22,22 @@ public class Producer {
 		
 		while (loopCounter < 50) {
 			String line = lineCreator.createLineContext(filePath, fileName);
-			writer.write(filePath, fileName, line);
+			File f = new File(filePath, fileName);
+			writer.setFile(f);
+			try {
+				RandomAccessFile raf = new RandomAccessFile(f, "rw");
+				writer.setRam(raf);
+				FileChannel channel = raf.getChannel();
+				writer.setChannel(channel);
+				writer.setLock(channel.lock());
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			writer.write(line);
 			loopCounter++;
 			try {
 				Thread.sleep(1000);

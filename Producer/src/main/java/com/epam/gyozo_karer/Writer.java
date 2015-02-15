@@ -10,22 +10,25 @@ import java.nio.channels.FileLock;
 import org.apache.log4j.Logger;
 
 public class Writer {
-	
+
 	final static Logger logger = Logger.getLogger(Writer.class);
 
-	public void write(String filePath, String fileName, String line) {
-		logger.info(String.format("Write the into %s file", fileName));
-		RandomAccessFile ram = null;
-		FileChannel channel = null;
-		FileLock lock = null;
+	private File file = null;
+	private RandomAccessFile ram = null;
+	private FileChannel channel = null;
+	private FileLock lock = null;
+
+	public void write(String line) {
+		logger.info(String.format("Write the into %s file", file.getName()));
+
 		try {
 
-			File file = new File(filePath, fileName);
+			// file = new File(filePath, fileName);
 
-			ram = new RandomAccessFile(file, "rw");
-			channel = ram.getChannel();
+			// ram = new RandomAccessFile(file, "rw");
+//			channel = ram.getChannel();
 
-			lock = channel.lock();
+//			lock = channel.lock();
 			long fileLength = file.length();
 			ram.seek(fileLength);
 
@@ -35,11 +38,12 @@ public class Writer {
 			buf.flip();
 
 			channel.write(buf);
-			
+
 		} catch (IOException e) {
 			logger.error(e);
+			e.printStackTrace();
 		} finally {
-			if (lock != null && lock.isValid())
+			if (/*lock != null && */lock.isValid())
 				try {
 					lock.release();
 					channel.close();
@@ -53,5 +57,23 @@ public class Writer {
 
 		}
 	}
+
+	public void setRam(RandomAccessFile ram) {
+		this.ram = ram;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+	
+	public void setChannel(FileChannel channel) {
+		this.channel = channel;
+	}
+
+	public void setLock(FileLock lock) {
+		this.lock = lock;
+	}
+
+
 
 }

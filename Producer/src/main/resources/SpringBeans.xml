@@ -3,11 +3,18 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="outputFilePath" class="java.lang.String">
+<!-- 	<bean id="outputFilePath" class="java.lang.String">
 		<constructor-arg value="d:/Trainings/InterviewPreparationWorkspace/test" />
 	</bean>
 	<bean id="outputFileName" class="java.lang.String">
 		<constructor-arg value="alma.txt" />
+	</bean> -->
+
+	<bean id="outputFilePath" class="java.lang.String">
+		<constructor-arg value="e:/Gyozo/sts-bundle" />
+	</bean>
+	<bean id="outputFileName" class="java.lang.String">
+		<constructor-arg value="alma1.txt" />
 	</bean>
 
 	<bean id="writer" class="com.epam.gyozo_karer.Writer"/>

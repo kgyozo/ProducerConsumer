@@ -2,24 +2,6 @@ package com.epam.gyozo_karer.observer;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -27,7 +9,6 @@ import org.apache.log4j.Logger;
 import com.epam.gyozo_karer.data.FileEvent;
 import com.epam.gyozo_karer.file.FileHandler;
 import com.epam.gyozo_karer.file.Writer;
-import com.epam.gyozo_karer.watcher.FileWatcher;
 
 public class WriteOutObserver implements Observer {
 	
