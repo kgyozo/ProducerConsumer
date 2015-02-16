@@ -7,7 +7,7 @@
 		<constructor-arg value="d:/Trainings/InterviewPreparationWorkspace/test" />
 	</bean>
 	<bean id="outputFileName" class="java.lang.String">
-		<constructor-arg value="alma.txt" />
+		<constructor-arg value="outputProducerTest.out" />
 	</bean> 
 
 	<bean id="outputFile" class="java.io.File" >
@@ -33,6 +33,7 @@
 		<property name="raf" ref="raf"/>
 		<property name="writer" ref="writer"/>
 		<property name="lineCreator" ref="creator"/>
+		<property name="maxCounter" value="1"/>
 	</bean>
 	
 </beans>

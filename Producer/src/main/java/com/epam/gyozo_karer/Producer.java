@@ -7,40 +7,53 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.google.common.base.Preconditions;
+import com.google.common.reflect.ClassPath;
 
 public class Producer {
 	
 	final static Logger logger = Logger.getLogger(Producer.class);
 	
-	private String filePath;
-	private String fileName;
 	private Writer writer;
 	private LineCreator lineCreator;
+	private File file;
+	private int maxCounter = 50;
+	private RandomAccessFile raf;
+	private ApplicationContext ctx;
 
 	public void run() {
+		Preconditions.checkNotNull(this.file, "file argument cannot be null");
+        Preconditions.checkNotNull(this.writer, "writer argument cannot be null");
+        Preconditions.checkNotNull(this.lineCreator, "lineCreator argument cannot be null");
+        Preconditions.checkNotNull(this.ctx, "ApplicationContext argument cannot be null");
+        
 		int loopCounter = 0;
 		
-		while (loopCounter < 50) {
-			String line = lineCreator.createLineContext(filePath, fileName);
-			File f = new File(filePath, fileName);
-			writer.setFile(f);
+		while (loopCounter < maxCounter) {
+			String line = lineCreator.createLineContext(file.getParent(), file.getName());
+			FileChannel channel;
+			writer.setFile(file);
 			try {
-				RandomAccessFile raf = new RandomAccessFile(f, "rw");
-				writer.setRam(raf);
-				FileChannel channel = raf.getChannel();
+				raf = (RandomAccessFile) ctx.getBean("raf");
+				writer.setRaf(raf);
+				channel = raf.getChannel();
 				writer.setChannel(channel);
 				writer.setLock(channel.lock());
 			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 			writer.write(line);
 			loopCounter++;
 			try {
-				Thread.sleep(1000);
+				if ((loopCounter < maxCounter)) {
+					Thread.sleep(1000);
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				logger.error(e);
@@ -57,22 +70,6 @@ public class Producer {
 		this.lineCreator = lineCreator;
 	}
 
-	public String getFilePath() {
-		return filePath;
-	}
-
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
 	public Writer getWriter() {
 		return writer;
 	}
@@ -80,8 +77,28 @@ public class Producer {
 	public void setWriter(Writer writer) {
 		this.writer = writer;
 	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
 	
-	
+	public void setMaxCounter(int maxCounter) {
+		this.maxCounter = maxCounter;
+	}
+
+	public void setRaf(RandomAccessFile raf) {
+		this.raf = raf;
+	}
+
+	public void setCtx(ApplicationContext ctx) {
+		this.ctx = ctx;
+	}
+
+
 	
 
 }

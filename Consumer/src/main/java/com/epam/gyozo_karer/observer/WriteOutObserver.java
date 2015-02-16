@@ -5,6 +5,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 import com.epam.gyozo_karer.data.FileEvent;
 import com.epam.gyozo_karer.file.FileHandler;
@@ -22,10 +23,6 @@ public class WriteOutObserver implements Observer {
 		if (ENTRY_MODIFY == event.getFileEvent()) {
 			List<String> lines = modifyFileHandler.action(event);
 			if (!lines.isEmpty()) {
-				//DI
-				writer = new Writer();
-			    writer.setFile("d:/Trainings/InterviewPreparationWorkspace/test", "alma.out");
-				
 			    writer.writeOut(lines);
 			}
 		}
@@ -47,5 +44,6 @@ public class WriteOutObserver implements Observer {
 		this.writer = writer;
 	}
 	
+
 	
 }

@@ -39,4 +39,14 @@ public class Writer {
 		}
 	}
 
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	
+	
+
 }

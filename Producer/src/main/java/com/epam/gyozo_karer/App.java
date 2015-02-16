@@ -8,6 +8,7 @@ public class App {
 		ApplicationContext ctx = new ClassPathXmlApplicationContext(
 				"SpringBeans.xml");
 		Producer producer = (Producer) ctx.getBean("producer");
+		producer.setCtx(ctx);
 		producer.run();
 	}
 }

@@ -8,9 +8,11 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.channels.spi.AbstractInterruptibleChannel;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -21,15 +23,18 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-//@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({AFinalClass.class, FileChannel.class})
+@PrepareForTest({AbstractInterruptibleChannel.class, FileChannel.class})
 public class WriterTest {
 	
 	private static final String TEST_LINE = "blabla";
 	
 	File outputFile;
 	RandomAccessFile raf;
+	
+	@Before
+	public void setUp() throws Exception {
+	}
 
 	@Test
 	public void successWriteOut() {
@@ -44,12 +49,8 @@ public class WriterTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Writer writer = new Writer();
-		writer.setFile(outputFile);
-		writer.setRam(raf);
-		writer.setChannel(channel);
-		writer.setLock(lock);
-		writer.write("blabla");
+		Writer writer = new Writer(outputFile, raf, channel, lock);
+		writer.write("TEST_LINE");
 		
 		Mockito.verify(outputFile, Mockito.times(1)).length();
 	}
@@ -69,13 +70,10 @@ public class WriterTest {
 			exception = true;
 		}
 		
-		Writer writer = new Writer();
+		Writer writer = new Writer(outputFile, raf, channel, lock);
 		
-		writer.setFile(outputFile);
-		writer.setRam(raf);
-		writer.setChannel(channel);
-		writer.setLock(lock);
 		writer.write(TEST_LINE);
+		
 		assertFalse("seek does not handle exception", exception);
 	}
 	
@@ -95,11 +93,7 @@ public class WriterTest {
 		} catch (IOException e) {
 			exception = true;
 		}
-		Writer writer = new Writer();
-		writer.setFile(outputFile);
-		writer.setRam(raf);
-		writer.setChannel(channel);
-		writer.setLock(lock);
+		Writer writer = new Writer(outputFile, raf, channel, lock);
 		writer.write(TEST_LINE);
 		assertFalse("lock release does not handle exception", exception);
 	}
@@ -115,19 +109,18 @@ public class WriterTest {
 		FileLock lock = Mockito.mock(FileLock.class);
 		boolean exception = false;
 		try {
-			Mockito.when(channel.write(ByteBuffer.allocate(20))).thenReturn(20);
+			Mockito.when(outputFile.getName()).thenReturn("TEST_FILE");
+			PowerMockito.when(channel.write(ByteBuffer.allocate(20))).thenReturn(20);
 			Mockito.when(lock.isValid()).thenReturn(true);
-			channel.close();
 			PowerMockito.doThrow(new IOException()).when(channel).close();
+			
+			channel.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			exception = true;
 		}
-		Writer writer = new Writer();
-		writer.setFile(outputFile);
-		writer.setRam(raf);
-		writer.setChannel(channel);
-		writer.setLock(lock);
+		Writer writer = new Writer(outputFile, raf, channel, lock);
 		writer.write(TEST_LINE);
 		assertFalse("channel close does not handle exception", exception);
 	}
@@ -149,11 +142,7 @@ public class WriterTest {
 			e.printStackTrace();
 			exception = true;
 		}
-		Writer writer = new Writer();
-		writer.setFile(outputFile);
-		writer.setRam(raf);
-		writer.setChannel(channel);
-		writer.setLock(lock);
+		Writer writer = new Writer(outputFile, raf, channel, lock);
 		writer.write(TEST_LINE);
 		assertFalse("file close does not handle exception", exception);
 	}

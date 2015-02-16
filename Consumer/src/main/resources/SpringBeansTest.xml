@@ -4,16 +4,16 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<bean id="watchableFilePath" class="java.lang.String">
-		<constructor-arg value="d:/Trainings/InterviewPreparationWorkspace/test" />
+		<constructor-arg value="d:/Trainings/InterviewPreparationWorkspace/test/test" />
 	</bean>
 	<bean id="watchableFileName" class="java.lang.String">
-		<constructor-arg value="input.txt" />
+		<constructor-arg value="inputTest.txt" />
 	</bean>
 	<bean id="outputFilePath" class="java.lang.String">
 		<constructor-arg value="d:/Trainings/InterviewPreparationWorkspace/test" />
 	</bean>
 	<bean id="outputFileName" class="java.lang.String">
-		<constructor-arg value="output.out" />
+		<constructor-arg value="outputTest.out" />
 	</bean>
 
 	<bean id="fileWatcher" class="com.epam.gyozo_karer.watcher.FileWatcher">
